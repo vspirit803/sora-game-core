@@ -23,7 +23,6 @@ export class CharacterNormal implements UUID {
     this.level = 0;
 
     const properties: { [propName in CharacterPropertyType]?: CharacterPropertyNormal } = {};
-
     for (const eachPropName in character.properties) {
       const eachProperty = character.properties[eachPropName as CharacterPropertyType];
       properties[eachPropName as CharacterPropertyType] = new CharacterPropertyNormal({
@@ -40,6 +39,7 @@ export class CharacterNormal implements UUID {
    */
   loadSave(eachCharacterSave: CharacterSave): void {
     this.level = eachCharacterSave.level;
+    this.uuid = eachCharacterSave.uuid;
     if (eachCharacterSave.name) {
       this.name = eachCharacterSave.name;
     }
