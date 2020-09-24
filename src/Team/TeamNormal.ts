@@ -1,3 +1,10 @@
+/*
+ * @Author: vspirit803
+ * @Date: 2020-09-24 08:41:10
+ * @LastEditTime: 2020-09-24 09:37:00
+ * @LastEditors: vspirit803
+ * @Description:
+ */
 import { CharacterNormal } from '@src/Character';
 import { MAX_TEAM_MEMBERS_NUM, UUID } from '@src/Common';
 import { Game } from '@src/Game';
@@ -33,7 +40,7 @@ export class TeamNormal implements UUID {
         character = new CharacterNormal(eachMember);
       } else {
         //id
-        character = Game.characterCenter.getCharacter(eachMember.id);
+        character = Game.getInstence().characterCenter.getCharacter(eachMember.id);
       }
 
       if (eachMember.level) {

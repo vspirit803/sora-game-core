@@ -1,3 +1,12 @@
+/*
+ * @Author: vspirit803
+ * @Date: 2020-09-23 16:57:06
+ * @LastEditTime: 2020-09-24 16:19:51
+ * @LastEditors: vspirit803
+ * @Description: 角色中心 单例模式
+ */
+import { SaveInterface } from '@src/Game';
+
 import { CharacterConfiguration } from './CharacterConfiguration';
 import { CharacterNormal } from './CharacterNormal';
 import { CharacterSave } from './CharacterSave';
@@ -5,40 +14,54 @@ import { CharacterSave } from './CharacterSave';
 /**
  * 角色中心
  */
-export class CharacterCenter {
+export class CharacterCenter implements SaveInterface<Array<CharacterSave>> {
+  static instence: CharacterCenter;
+  static getInstence(): CharacterCenter {
+    if (!CharacterCenter.instence) {
+      CharacterCenter.instence = new CharacterCenter();
+    }
+    return CharacterCenter.instence;
+  }
+
   /**角色配置映射 */
-  static charactersConfigurationMap: Map<string, CharacterConfiguration> = new Map<string, CharacterConfiguration>();
+  charactersConfigurationMap: Map<string, CharacterConfiguration>;
   /**角色列表 */
-  static characters: Array<CharacterNormal> = [];
+  characters: Array<CharacterNormal>;
   /**角色id到角色实例的映射 */
-  static charactersMap: Map<string, CharacterNormal> = new Map<string, CharacterNormal>();
+  charactersMap: Map<string, CharacterNormal>;
+
+  private constructor() {
+    this.characters = [];
+    this.charactersMap = new Map<string, CharacterNormal>();
+    this.charactersConfigurationMap = new Map<string, CharacterConfiguration>();
+  }
 
   /**
    * 将角色配置添加进列表
    * @param character 要添加的角色
    */
-  static addCharacterConfiguration(character: CharacterConfiguration): void {
-    CharacterCenter.charactersConfigurationMap.set(character.id, character);
+  addCharacterConfiguration(character: CharacterConfiguration): void {
+    this.charactersConfigurationMap.set(character.id, character);
   }
 
   /**
    * 将角色添加进列表
    * @param character 要添加的角色
    */
-  static addCharacter(character: CharacterNormal): void {
-    CharacterCenter.charactersMap.set(character.id, character);
-    CharacterCenter.characters.push(character);
+  addCharacter(character: CharacterNormal): void {
+    this.charactersMap.set(character.id, character);
+    this.characters.push(character);
   }
 
   /**
    * 载入角色配置
    * @param characters 角色配置数组
    */
-  static loadConfiguration(characters: Array<CharacterConfiguration>): void {
+  loadConfiguration(characters: Array<CharacterConfiguration>): void {
     for (const eachCharacter of characters) {
-      CharacterCenter.addCharacterConfiguration(eachCharacter);
+      this.addCharacterConfiguration(eachCharacter);
       if (eachCharacter.id.startsWith('Enemy')) {
-        CharacterCenter.loadCharacter(eachCharacter.id);
+        this.loadCharacter(eachCharacter.id);
       }
     }
   }
@@ -47,11 +70,11 @@ export class CharacterCenter {
    * 载入角色存档
    * @param characters 角色存档数组
    */
-  static loadSave(characters: Array<CharacterSave>): void {
+  loadSave(characters: Array<CharacterSave>): void {
     for (const eachCharacterSave of characters) {
-      let eachCharacter = CharacterCenter.charactersMap.get(eachCharacterSave.id);
+      let eachCharacter = this.charactersMap.get(eachCharacterSave.id);
       if (eachCharacter === undefined) {
-        eachCharacter = CharacterCenter.loadCharacter(eachCharacterSave.id);
+        eachCharacter = this.loadCharacter(eachCharacterSave.id);
       }
       eachCharacter.loadSave(eachCharacterSave);
     }
@@ -59,29 +82,31 @@ export class CharacterCenter {
 
   /**
    * 生成角色存档
-   * @returns 角色存档数组Array<CharacterSave>
+   * @returns 角色存档数组
    */
-  static generateSave(): Array<CharacterSave> {
-    return CharacterCenter.characters.map((eachCharacter) => {
-      const characterSave: CharacterSave = {
-        uuid: eachCharacter.uuid,
-        id: eachCharacter.id,
-        level: eachCharacter.level,
-      };
-      // 名字与配置不同(改过名)时,才会保存名字
-      if (eachCharacter.name !== CharacterCenter.charactersConfigurationMap.get(eachCharacter.id)!.name) {
-        characterSave.name = eachCharacter.name;
-      }
-      return characterSave;
-    });
+  generateSave(): Array<CharacterSave> {
+    return this.characters
+      .filter((eachCharacter) => eachCharacter.id.startsWith('Enemy'))
+      .map((eachCharacter) => {
+        const characterSave: CharacterSave = {
+          uuid: eachCharacter.uuid,
+          id: eachCharacter.id,
+          level: eachCharacter.level,
+        };
+        // 名字与配置不同(改过名)时,才会保存名字
+        if (eachCharacter.name !== this.charactersConfigurationMap.get(eachCharacter.id)!.name) {
+          characterSave.name = eachCharacter.name;
+        }
+        return characterSave;
+      });
   }
 
   /**
    * 用角色配置初始化角色
    * @param id 角色id
    */
-  static loadCharacter(id: string): CharacterNormal {
-    const characterConfiguration = CharacterCenter.charactersConfigurationMap.get(id);
+  loadCharacter(id: string): CharacterNormal {
+    const characterConfiguration = this.charactersConfigurationMap.get(id);
     if (characterConfiguration === undefined) {
       throw Error(`id为[${id}]的角色配置不存在`);
     }
@@ -89,7 +114,7 @@ export class CharacterCenter {
       // equipmentSlots: commonEquipmentSlotsConfiguration,
       ...characterConfiguration,
     });
-    CharacterCenter.addCharacter(character);
+    this.addCharacter(character);
     return character;
   }
 
@@ -97,8 +122,8 @@ export class CharacterCenter {
    * 激活角色
    * @param id 角色id
    */
-  static unlockCharacter(id: string): void {
-    CharacterCenter.loadCharacter(id);
+  unlockCharacter(id: string): void {
+    this.loadCharacter(id);
     console.log(`激活了id为[${id}]的角色`);
   }
 
@@ -106,8 +131,8 @@ export class CharacterCenter {
    * 获取角色
    * @param id 角色id
    */
-  static getCharacter(id: string): CharacterNormal {
-    const character = CharacterCenter.charactersMap.get(id);
+  getCharacter(id: string): CharacterNormal {
+    const character = this.charactersMap.get(id);
     if (character === undefined) {
       throw new Error(`id为${id}的角色未激活`);
     }

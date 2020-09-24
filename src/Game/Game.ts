@@ -1,13 +1,15 @@
-// import battles from '@assets/battles.json';
-import characters from '@assets/characters.json';
-// import cities from '@assets/cities.json';
-// import equipments from '@assets/items/equipments.json';
-// import maps from '@assets/maps.json';
-// import provinces from '@assets/provinces.json';
-// import skills from '@assets/skills.json';
+/*
+ * @Author: vspirit803
+ * @Date: 2020-09-24 08:41:10
+ * @LastEditTime: 2020-09-24 14:55:52
+ * @LastEditors: vspirit803
+ * @Description:
+ */
+
 // import { BattleCenter } from '@src/Battle';
+import packageJson from '@src/../package.json';
 import { CharacterCenter } from '@src/Character';
-// import { ItemCenter } from '@src/Item';
+import { ItemCenter } from '@src/Item';
 // import { MapCenter } from '@src/Map';
 // import { SkillFactory } from '@src/Skill';
 // import { TaskCenter } from '@src/Task';
@@ -19,65 +21,51 @@ import { GameSave } from './GameSave';
  * 游戏的实例
  */
 export class Game {
+  static instence: Game;
+  static getInstence(): Game {
+    if (!Game.instence) {
+      Game.instence = new Game();
+    }
+    return Game.instence;
+  }
+
   /**角色中心 */
-  static characterCenter: CharacterCenter;
+  characterCenter: CharacterCenter;
   // /**任务中心  */
-  // static taskCenter: TaskCenter;
-  // /**背包 */
-  // static backpack: ItemCenter;
+  // taskCenter: TaskCenter;
+  /**背包 */
+  backpack: ItemCenter;
   // /**战斗中心 */
-  // static battleCenter: BattleCenter;
+  // battleCenter: BattleCenter;
   // /**地图中心 */
-  // static mapCenter: MapCenter;
+  // mapCenter: MapCenter;
   /**队伍中心 */
-  static teamCenter: TeamCenter;
+  teamCenter: TeamCenter;
 
-  static init() {
-    // SkillFactory.loadConfiguration(skills);
-
-    //初始化角色中心
-    CharacterCenter.loadConfiguration(characters);
-
-    // //初始化任务中心
-    // Game.taskCenter = new TaskCenter();
-
-    // //初始化背包
-    // Game.backpack = new ItemCenter();
-    // Game.backpack.equipmentCenter.loadConfiguration(equipments);
-
-    // //初始化战斗中心
-    // Game.battleCenter = new BattleCenter();
-    // Game.battleCenter.loadConfiguration(battles);
-
-    // //初始化地图中心
-    // Game.mapCenter = new MapCenter();
-    // Game.mapCenter.loadCitiesConfiguration(cities);
-    // Game.mapCenter.loadProvincesConfiguration(provinces);
-    // Game.mapCenter.loadMapsConfiguration(maps);
-
-    //初始化队伍中心
-    // Game.teamCenter = new TeamCenter();
+  private constructor() {
+    this.characterCenter = CharacterCenter.getInstence();
+    this.teamCenter = TeamCenter.getInstence();
+    this.backpack = ItemCenter.getInstence();
   }
 
   /**
    * 载入存档
    * @param gameSave 存档数据
    */
-  static loadSave(gameSave: GameSave): void {
-    CharacterCenter.loadSave(gameSave.characters);
-    // Game.backpack.loadSave(gameSave.backpack);
+  loadSave(gameSave: GameSave): void {
+    this.characterCenter.loadSave(gameSave.characters);
+    this.backpack.loadSave(gameSave.backpack);
     // Game.mapCenter.loadSave(gameSave.maps);
-    // Game.teamCenter.loadSave(gameSave.teams);
+    this.teamCenter.loadSave(gameSave.teams);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static generateSave(): GameSave {
+  generateSave(): GameSave {
     return {
-      version: '0.0.1',
-      characters: CharacterCenter.generateSave(),
-      // backpack: Game.backpack.generateSave(),
+      version: packageJson.version,
+      characters: this.characterCenter.generateSave(),
+      backpack: this.backpack.generateSave(),
       // maps: Game.mapCenter.generateSave(),
-      // teams: Game.teamCenter.generateSave(),
+      teams: this.teamCenter.generateSave(),
     };
   }
 }

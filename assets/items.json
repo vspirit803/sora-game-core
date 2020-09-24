@@ -1,0 +1,86 @@
+{
+  "systemItems": [
+    {
+      "id": "system0001",
+      "name": "铜钱",
+      "type": "System",
+      "rarity": "Rare",
+      "isStackable": true
+    },
+    {
+      "id": "system0002",
+      "name": "白银",
+      "type": "System",
+      "rarity": "Mythical",
+      "isStackable": true
+    }
+  ],
+  "materials": [
+    {
+      "id": "material0001",
+      "name": "铁块",
+      "type": "Material",
+      "rarity": "Rare",
+      "isStackable": true
+    },
+    {
+      "id": "material0002",
+      "name": "铜块",
+      "type": "Material",
+      "rarity": "Rare",
+      "isStackable": true
+    },
+    {
+      "id": "material0003",
+      "name": "银块",
+      "type": "Material",
+      "rarity": "Mythical",
+      "isStackable": true
+    },
+    {
+      "id": "material0004",
+      "name": "金块",
+      "type": "Material",
+      "rarity": "Legendary",
+      "isStackable": true
+    }
+  ],
+  "equipments": [
+    {
+      "id": "equipment0001",
+      "name": "破旧弓",
+      "type": "Equipment",
+      "equipmentType": "Weapon",
+      "level": 1,
+      "properties": { "atk": { "min": 5, "max": 8 } },
+      "rarity": "Common"
+    },
+    {
+      "id": "equipment0002",
+      "name": "简易弓",
+      "type": "Equipment",
+      "equipmentType": "Weapon",
+      "level": 10,
+      "properties": { "atk": { "min": 15, "max": 20 } },
+      "rarity": "Rare"
+    },
+    {
+      "id": "equipment0003",
+      "name": "精致弓",
+      "type": "Equipment",
+      "equipmentType": "Weapon",
+      "level": 15,
+      "properties": { "atk": { "min": 25, "max": 28 } },
+      "rarity": "Legendary"
+    },
+    {
+      "id": "equipment0004",
+      "name": "杨的反曲弓",
+      "type": "Equipment",
+      "equipmentType": "Weapon",
+      "level": 20,
+      "properties": { "atk": { "min": 100, "max": 100 } },
+      "rarity": "Immortal"
+    }
+  ]
+}
