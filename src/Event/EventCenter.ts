@@ -2,22 +2,18 @@
  * @Author: vspirit803
  * @Date: 2020-09-24 16:31:12
  * @Description:
- * @LastEditTime: 2020-09-24 17:44:29
+ * @LastEditTime: 2020-09-25 17:41:40
  * @LastEditors: vspirit803
  */
 import { UUID } from '@src/Common';
 
-import { EventTypes } from './EventTypes';
+import { EventData } from './EventData';
 
-interface EventData {
-  [propName: string]: unknown;
-}
-
-class EventListener {
-  eventType: EventTypes;
+class EventListener<T extends EventData = EventData> {
+  eventType: T['type'];
   priority: number;
   filters: Array<string>;
-  callback: (eventData: EventData) => Promise<any>;
+  callback: (eventData: T) => Promise<any>;
   timestamp: number;
 
   constructor({
@@ -26,10 +22,10 @@ class EventListener {
     filters,
     callback,
   }: {
-    eventType: EventTypes;
+    eventType: T['type'];
     priority: number;
     filters: Array<string>;
-    callback: (eventData: EventData) => Promise<any>;
+    callback: (eventData: T) => Promise<any>;
   }) {
     this.eventType = eventType;
     this.priority = priority;
@@ -55,17 +51,17 @@ export class EventCenter {
     this.listeners = [];
   }
 
-  listen({
+  listen<T extends EventData>({
     eventType,
     priority = 5,
     filter,
     callback,
   }: {
-    eventType: EventTypes;
+    eventType: T['type'];
     priority?: number;
     filter?: UUID | Array<UUID>;
-    callback: (eventData: EventData) => Promise<any>;
-  }): EventListener {
+    callback: (eventData: T) => Promise<void>;
+  }): EventListener<T> {
     let filters: Array<string>;
     if (filter === undefined) {
       filters = [];
@@ -76,7 +72,7 @@ export class EventCenter {
     }
 
     const listener = new EventListener({ eventType, priority, filters, callback });
-    this.listeners.push(listener);
+    this.listeners.push((listener as unknown) as EventListener);
     return listener;
   }
 
@@ -84,7 +80,8 @@ export class EventCenter {
     this.listeners = this.listeners.filter((eachListener) => eachListener !== listener);
   }
 
-  async trigger({ eventType, source }: { eventType: EventTypes; source: UUID }) {
+  async trigger<T extends EventData>(source: UUID, eventData: T): Promise<void> {
+    const eventType = eventData.eventType;
     const reachableListeners = this.listeners
       .filter((eachListener) => eachListener.eventType === eventType)
       //listener不过滤或过滤器包含当前发布者
@@ -96,7 +93,7 @@ export class EventCenter {
 
     for (let i = 0; i < sortedListeners.length; i++) {
       const eachListener = sortedListeners[i];
-      await eachListener.callback({});
+      await eachListener.callback(eventData);
     }
   }
 }

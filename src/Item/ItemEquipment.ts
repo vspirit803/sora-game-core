@@ -1,7 +1,7 @@
 /*
  * @Author: vspirit803
  * @Date: 2020-09-24 09:39:24
- * @LastEditTime: 2020-09-24 15:48:28
+ * @LastEditTime: 2020-09-25 13:57:33
  * @LastEditors: vspirit803
  * @Description: 装备
  */
@@ -15,7 +15,7 @@ import { ItemCenter } from './ItemCenter';
 import { ItemEquipmentConfiguration } from './ItemEquipmentConfiguration';
 import { ItemEquipmentProperty } from './ItemEquipmentProperty';
 import { ItemEquipmentSave } from './ItemEquipmentSave';
-import { ItemEquipmentType, ItemEquipmentTypes } from './ItemEquipmentType';
+import { ItemEquipmentTypes } from './ItemEquipmentType';
 import { ItemType } from './ItemType';
 
 function isEquipmentSave(equipment: ItemEquipmentConfiguration | ItemEquipmentSave): equipment is ItemEquipmentSave {

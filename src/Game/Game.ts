@@ -1,13 +1,14 @@
 /*
  * @Author: vspirit803
  * @Date: 2020-09-24 08:41:10
- * @LastEditTime: 2020-09-24 14:55:52
+ * @LastEditTime: 2020-09-25 17:00:11
  * @LastEditors: vspirit803
  * @Description:
  */
 
 // import { BattleCenter } from '@src/Battle';
 import packageJson from '@src/../package.json';
+import { BattleCenter } from '@src/Battle';
 import { CharacterCenter } from '@src/Character';
 import { ItemCenter } from '@src/Item';
 // import { MapCenter } from '@src/Map';
@@ -35,8 +36,8 @@ export class Game {
   // taskCenter: TaskCenter;
   /**背包 */
   backpack: ItemCenter;
-  // /**战斗中心 */
-  // battleCenter: BattleCenter;
+  /**战斗中心 */
+  battleCenter: BattleCenter;
   // /**地图中心 */
   // mapCenter: MapCenter;
   /**队伍中心 */
@@ -46,6 +47,7 @@ export class Game {
     this.characterCenter = CharacterCenter.getInstence();
     this.teamCenter = TeamCenter.getInstence();
     this.backpack = ItemCenter.getInstence();
+    this.battleCenter = BattleCenter.getInstence();
   }
 
   /**

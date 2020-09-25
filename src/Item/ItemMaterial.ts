@@ -1,7 +1,7 @@
 /*
  * @Author: vspirit803
  * @Date: 2020-09-24 09:39:24
- * @LastEditTime: 2020-09-24 14:08:33
+ * @LastEditTime: 2020-09-25 13:57:02
  * @LastEditors: vspirit803
  * @Description:
  */
@@ -13,7 +13,7 @@ import { ItemMaterialConfiguration } from './ItemMaterialConfiguration';
 import { ItemMaterialSave } from './ItemMaterialSave';
 import { ItemType } from './ItemType';
 
-function isItemMaterialSave(material: ItemMaterialSave | ItemMaterialConfiguration): material is ItemMaterialSave {
+function isItemMaterialSave(material: ItemMaterialConfiguration | ItemMaterialSave): material is ItemMaterialSave {
   return 'uuid' in material;
 }
 
@@ -21,9 +21,9 @@ function isItemMaterialSave(material: ItemMaterialSave | ItemMaterialConfigurati
  * 材料类物品
  */
 export class ItemMaterial extends ItemBase {
-  constructor(materialSave: ItemMaterialSave);
   constructor(materialConfiguration: ItemMaterialConfiguration);
-  constructor(material: ItemMaterialSave | ItemMaterialConfiguration) {
+  constructor(materialSave: ItemMaterialSave);
+  constructor(material: ItemMaterialConfiguration | ItemMaterialSave) {
     let materialConfiguration: ItemMaterialConfiguration;
     if (isItemMaterialSave(material)) {
       materialConfiguration = ItemCenter.getInstence().materialsConfigurationMap.get(material.id)!;

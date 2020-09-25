@@ -1,7 +1,7 @@
 /*
  * @Author: vspirit803
  * @Date: 2020-09-23 16:57:06
- * @LastEditTime: 2020-09-24 16:19:51
+ * @LastEditTime: 2020-09-25 17:03:58
  * @LastEditors: vspirit803
  * @Description: 角色中心 单例模式
  */
@@ -72,12 +72,15 @@ export class CharacterCenter implements SaveInterface<Array<CharacterSave>> {
    */
   loadSave(characters: Array<CharacterSave>): void {
     for (const eachCharacterSave of characters) {
-      let eachCharacter = this.charactersMap.get(eachCharacterSave.id);
-      if (eachCharacter === undefined) {
-        eachCharacter = this.loadCharacter(eachCharacterSave.id);
-      }
-      eachCharacter.loadSave(eachCharacterSave);
+      this.addCharacter(new CharacterNormal(eachCharacterSave));
     }
+    // for (const eachCharacterSave of characters) {
+    //   let eachCharacter = this.charactersMap.get(eachCharacterSave.id);
+    //   if (eachCharacter === undefined) {
+    //     eachCharacter = this.loadCharacter(eachCharacterSave.id);
+    //   }
+    //   eachCharacter.loadSave(eachCharacterSave);
+    // }
   }
 
   /**

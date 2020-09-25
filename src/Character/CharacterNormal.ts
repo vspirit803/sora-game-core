@@ -1,10 +1,23 @@
+/*
+ * @Author: vspirit803
+ * @Date: 2020-09-23 16:57:06
+ * @Description:
+ * @LastEditTime: 2020-09-25 14:02:50
+ * @LastEditors: vspirit803
+ */
 import { UUID } from '@src/Common';
+import { Skill, SkillFactory } from '@src/Skill';
 import { ObjectId } from 'bson';
 
+import { CharacterCenter } from './CharacterCenter';
 import { CharacterConfiguration } from './CharacterConfiguration';
 import { CharacterPropertyNormal } from './CharacterPropertyNormal';
 import { CharacterPropertyType } from './CharacterPropertyType';
 import { CharacterSave } from './CharacterSave';
+
+function isCharacterSave(character: CharacterConfiguration | CharacterSave): character is CharacterSave {
+  return 'uuid' in character;
+}
 
 /**
  * 角色类(平常状态)
@@ -15,34 +28,34 @@ export class CharacterNormal implements UUID {
   name: string;
   level: number;
   properties: { [propName in CharacterPropertyType]: CharacterPropertyNormal };
+  skills: Array<Skill>;
 
-  constructor(character: CharacterConfiguration) {
+  constructor(characterConfiguration: CharacterConfiguration);
+  constructor(characterSave: CharacterSave);
+  constructor(character: CharacterConfiguration | CharacterSave) {
+    let characterConfiguration: CharacterConfiguration;
+    if (isCharacterSave(character)) {
+      characterConfiguration = CharacterCenter.getInstence().charactersConfigurationMap.get(character.id)!;
+    } else {
+      characterConfiguration = character;
+    }
+
     this.uuid = new ObjectId().toHexString();
     this.id = character.id;
-    this.name = character.name;
-    this.level = 0;
+    this.name = character.name ?? characterConfiguration.name;
+    this.level = isCharacterSave(character) ? character.level : 0;
 
     const properties: { [propName in CharacterPropertyType]?: CharacterPropertyNormal } = {};
-    for (const eachPropName in character.properties) {
-      const eachProperty = character.properties[eachPropName as CharacterPropertyType];
+    for (const eachPropName in characterConfiguration.properties) {
+      const eachProperty = characterConfiguration.properties[eachPropName as CharacterPropertyType];
       properties[eachPropName as CharacterPropertyType] = new CharacterPropertyNormal({
         character: this,
         property: eachProperty,
       });
     }
     this.properties = properties as { [propName in CharacterPropertyType]: CharacterPropertyNormal };
-  }
 
-  /**
-   * 载入存档
-   * @param eachCharacterSave 角色的存档数据
-   */
-  loadSave(eachCharacterSave: CharacterSave): void {
-    this.level = eachCharacterSave.level;
-    this.uuid = eachCharacterSave.uuid;
-    if (eachCharacterSave.name) {
-      this.name = eachCharacterSave.name;
-    }
+    this.skills = characterConfiguration.skills.map((eachId) => SkillFactory.getSkill(eachId));
   }
 
   // putOnEquipment(slot: EquipmentSlot, equipment: ItemEquipment): void {

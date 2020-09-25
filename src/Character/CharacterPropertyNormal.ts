@@ -1,3 +1,10 @@
+/*
+ * @Author: vspirit803
+ * @Date: 2020-09-23 16:57:06
+ * @Description:
+ * @LastEditTime: 2020-09-25 13:47:17
+ * @LastEditors: vspirit803
+ */
 import { CharacterNormal } from './CharacterNormal';
 import { CharacterPropertyConfiguration } from './CharacterPropertyConfiguration';
 
@@ -11,7 +18,6 @@ export class CharacterPropertyNormal implements CharacterPropertyConfiguration {
   increaseValue: number;
   /**装备值 */
   equipmentValue: number;
-
   /**角色 */
   character: CharacterNormal;
   constructor({ character, property }: { character: CharacterNormal; property: CharacterPropertyConfiguration }) {
@@ -25,9 +31,6 @@ export class CharacterPropertyNormal implements CharacterPropertyConfiguration {
    * 获得常规状态的属性值
    */
   get normalValue(): number {
-    if (!this.character) {
-      throw new Error('此角色属性实例并未绑定角色');
-    }
     return this.character.level * this.increaseValue + this.baseValue + this.equipmentValue;
   }
 }
