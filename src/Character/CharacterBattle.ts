@@ -1,6 +1,7 @@
 import { Battle } from '@src/Battle';
 import { UUID } from '@src/Common';
 import {
+  EventDataActionEnd,
   EventDataAttacked,
   EventDataAttacking,
   EventDataDamaged,
@@ -14,8 +15,7 @@ import {
   RemoveAllListeners,
 } from '@src/Event';
 import { FactionBattle } from '@src/Faction';
-import { Skill } from '@src/Skill';
-import { skillStore } from '@src/Skill/Skills';
+import { SkillBattle } from '@src/Skill';
 import { Status } from '@src/Status';
 import { TeamBattle } from '@src/Team';
 
@@ -53,7 +53,7 @@ export class CharacterBattle implements CharacterNormal, UUID {
   /**状态数组 */
   statuses: Array<Status>;
 
-  skills: Array<Skill>;
+  skills: Array<SkillBattle>;
 
   constructor(character: CharacterNormal, team: TeamBattle) {
     this.id = character.id;
@@ -61,11 +61,14 @@ export class CharacterBattle implements CharacterNormal, UUID {
     this.level = character.level;
     this.id = character.id;
     this.uuid = character.uuid;
-    this.skills = character.skills;
 
     this.team = team;
     this.faction = team.faction;
     this.battle = team.battle;
+
+    this.skills = character.skills.map(
+      (eachSkill) => new SkillBattle({ owner: this, id: eachSkill.id, level: eachSkill.level }),
+    );
 
     const properties: { [propName in CharacterPropertyType]?: CharacterPropertyBattle } = {};
     for (const eachPropName in character.properties) {
@@ -185,6 +188,16 @@ export class CharacterBattle implements CharacterNormal, UUID {
     this.unSubscribeBaseBattleEvent();
   }
 
+  @Listen<EventDataActionEnd>({ eventType: 'ActionEnd', priority: 2 })
+  async onActionEnd(data: EventDataActionEnd) {
+    const character = data.source;
+    character.skills.forEach((eachSkill) => {
+      if (eachSkill.currCooldown !== 0) {
+        eachSkill.currCooldown--;
+      }
+    });
+  }
+
   /**移除订阅基本的战斗事件 */
   @RemoveAllListeners
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -210,11 +223,14 @@ export class CharacterBattle implements CharacterNormal, UUID {
 
       await this.battle.eventCenter.trigger(this, skillSelectData);
       const { selectedSkill, selectedTarget } = skillSelectData;
+      if (skill.currCooldown !== 0) {
+        throw new Error(`技能[${skill.id} ${skill.name}]处于冷却中,不能选择`);
+      }
       target = selectedTarget ?? target;
       skill = selectedSkill ?? skill;
     }
 
-    await skillStore[skill.id](skill, this, target);
+    await skill.trigger(target);
     await this.battle.eventCenter.trigger(this, { eventType: 'ActionEnd', source: this });
   }
 

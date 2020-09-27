@@ -2,11 +2,11 @@
  * @Author: vspirit803
  * @Date: 2020-09-23 16:57:06
  * @Description:
- * @LastEditTime: 2020-09-25 14:02:50
+ * @LastEditTime: 2020-09-27 10:42:15
  * @LastEditors: vspirit803
  */
 import { UUID } from '@src/Common';
-import { Skill, SkillFactory } from '@src/Skill';
+import { SkillNormal } from '@src/Skill';
 import { ObjectId } from 'bson';
 
 import { CharacterCenter } from './CharacterCenter';
@@ -28,7 +28,7 @@ export class CharacterNormal implements UUID {
   name: string;
   level: number;
   properties: { [propName in CharacterPropertyType]: CharacterPropertyNormal };
-  skills: Array<Skill>;
+  skills: Array<SkillNormal>;
 
   constructor(characterConfiguration: CharacterConfiguration);
   constructor(characterSave: CharacterSave);
@@ -55,7 +55,8 @@ export class CharacterNormal implements UUID {
     }
     this.properties = properties as { [propName in CharacterPropertyType]: CharacterPropertyNormal };
 
-    this.skills = characterConfiguration.skills.map((eachId) => SkillFactory.getSkill(eachId));
+    // this.skills = characterConfiguration.skills.map((eachId) => SkillFactory.getSkill(eachId));
+    this.skills = characterConfiguration.skills.map((eachId) => new SkillNormal({ owner: this, id: eachId }));
   }
 
   // putOnEquipment(slot: EquipmentSlot, equipment: ItemEquipment): void {

@@ -65,6 +65,7 @@
     "levels": [{ "ratio": 4 }, { "ratio": 6 }, { "ratio": 8 }],
     "description": " 神圣的一击，茉崔蒂通过赐予对手死亡来向他们致以敬意。 」",
     "cost": 6,
-    "type": "skill_attack"
+    "type": "skill_attack",
+    "cooldown": 1
   }
 ]

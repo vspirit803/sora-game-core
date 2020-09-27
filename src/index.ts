@@ -1,7 +1,7 @@
 /*
  * @Author: vspirit803
  * @Date: 2020-09-23 16:54:06
- * @LastEditTime: 2020-09-25 17:32:17
+ * @LastEditTime: 2020-09-27 13:52:20
  * @LastEditors: vspirit803
  * @Description:
  */
@@ -13,14 +13,13 @@ import save from '@saves/sav001.json';
 
 import { Game } from './Game';
 import { ItemConfigurations } from './Item';
-import { SkillFactory } from './Skill';
-
-SkillFactory.loadConfiguration(skills);
+import { SkillConfiguration } from './Skill';
 
 const game = Game.getInstence();
 //加载配置
-game.characterCenter.loadConfiguration(characters);
+game.skillCenter.loadConfiguration(skills as Array<SkillConfiguration>);
 game.backpack.loadConfigurations(items as ItemConfigurations);
+game.characterCenter.loadConfiguration(characters);
 game.battleCenter.loadConfiguration(battles);
 
 //载入存档

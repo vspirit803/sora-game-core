@@ -1,16 +1,28 @@
+import { SkillData } from './SkillData';
+import { SkillType } from './SkillType';
+
+/*
+ * @Author: vspirit803
+ * @Date: 2020-09-25 10:47:53
+ * @Description:
+ * @LastEditTime: 2020-09-27 11:47:12
+ * @LastEditors: vspirit803
+ */
 export interface SkillConfiguration {
   /**技能id */
   id: string;
   /**技能名称 */
   name: string;
   /**技能类型 */
-  type: string;
+  type: SkillType;
   /**技能等级数据 */
-  levels: Array<{ [propName: string]: number }>;
+  levels: Array<SkillData>;
   /**技能描述 */
   description: string;
   /**技能消耗 */
   cost: number;
   /**技能效果 */
   effects?: Array<unknown>;
+  /**技能冷却时间 */
+  cooldown?: number;
 }

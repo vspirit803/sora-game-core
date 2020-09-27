@@ -1,7 +1,7 @@
 /*
  * @Author: vspirit803
  * @Date: 2020-09-24 08:41:10
- * @LastEditTime: 2020-09-25 17:00:11
+ * @LastEditTime: 2020-09-27 11:30:49
  * @LastEditors: vspirit803
  * @Description:
  */
@@ -11,6 +11,7 @@ import packageJson from '@src/../package.json';
 import { BattleCenter } from '@src/Battle';
 import { CharacterCenter } from '@src/Character';
 import { ItemCenter } from '@src/Item';
+import { SkillCenter } from '@src/Skill';
 // import { MapCenter } from '@src/Map';
 // import { SkillFactory } from '@src/Skill';
 // import { TaskCenter } from '@src/Task';
@@ -42,12 +43,15 @@ export class Game {
   // mapCenter: MapCenter;
   /**队伍中心 */
   teamCenter: TeamCenter;
+  /**技能中心 */
+  skillCenter: SkillCenter;
 
   private constructor() {
     this.characterCenter = CharacterCenter.getInstence();
     this.teamCenter = TeamCenter.getInstence();
     this.backpack = ItemCenter.getInstence();
     this.battleCenter = BattleCenter.getInstence();
+    this.skillCenter = SkillCenter.getInstence();
   }
 
   /**

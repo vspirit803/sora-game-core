@@ -1,6 +1,6 @@
 import { Battle } from '@src/Battle';
 import { CharacterBattle } from '@src/Character';
-import { Skill } from '@src/Skill';
+import { SkillBattle } from '@src/Skill';
 
 import { EventTypes } from './EventTypes';
 
@@ -27,7 +27,7 @@ export interface EventDataActionStart extends EventData {
 export interface EventDataSkillSelect extends EventData {
   eventType: 'SkillSelect';
   source: CharacterBattle;
-  selectedSkill?: Skill;
+  selectedSkill?: SkillBattle;
   selectedTarget?: CharacterBattle;
 }
 
