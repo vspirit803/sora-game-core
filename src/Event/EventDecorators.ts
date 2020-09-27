@@ -2,7 +2,7 @@ import 'reflect-metadata';
 
 import { UUID } from '@src/Common';
 
-import { EventCenter } from './EventCenter';
+import { EventCenter, EventListener } from './EventCenter';
 import { EventData } from './EventData';
 import { EventTypes } from './EventTypes';
 
@@ -10,7 +10,7 @@ import { EventTypes } from './EventTypes';
  * @Author: vspirit803
  * @Date: 2020-09-25 14:06:27
  * @Description: 监听事件的装饰器
- * @LastEditTime: 2020-09-25 17:12:28
+ * @LastEditTime: 2020-09-27 09:16:34
  * @LastEditors: vspirit803
  */
 
@@ -58,6 +58,7 @@ export function Listener(value?: string) {
       constructor(...args: any[]) {
         super(...args);
         const eventNames: Array<EventTypes> = Reflect.getMetadataKeys(this);
+        const listenerList: Array<EventListener> = [];
         for (const eachEvent of eventNames) {
           const listeners: Array<{
             callback: (eventData: EventData) => Promise<void>;
@@ -72,16 +73,35 @@ export function Listener(value?: string) {
             } else if (Reflect.ownKeys(this).includes('uuid')) {
               filter = (this as unknown) as UUID;
             }
-            EventCenter.getInstence().listen({
+            const listener = EventCenter.getInstence().listen({
               eventType: eachEvent,
               priority,
               filter,
               callback: callback.bind(this),
             });
+            listenerList.push(listener);
           }
         }
+        Reflect.defineMetadata('listenerList', listenerList, this);
       }
     };
   }
   return classDecorator;
+}
+
+export function RemoveAllListeners(
+  target: any,
+  propertyKey: string,
+  descriptor: TypedPropertyDescriptor<(...args: any[]) => any>,
+) {
+  const method = descriptor.value!;
+  descriptor.value = function (...args: any[]) {
+    const result = method.apply(this, args);
+    // 注销监听器
+    const listenerList: Array<EventListener> = Reflect.getMetadata('listenerList', this);
+    listenerList.forEach((eachListener) => {
+      EventCenter.getInstence().cancelListen(eachListener);
+    });
+    return result;
+  };
 }

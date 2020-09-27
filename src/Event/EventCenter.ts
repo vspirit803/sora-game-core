@@ -2,14 +2,14 @@
  * @Author: vspirit803
  * @Date: 2020-09-24 16:31:12
  * @Description:
- * @LastEditTime: 2020-09-25 17:41:40
+ * @LastEditTime: 2020-09-27 09:11:38
  * @LastEditors: vspirit803
  */
 import { UUID } from '@src/Common';
 
 import { EventData } from './EventData';
 
-class EventListener<T extends EventData = EventData> {
+export class EventListener<T extends EventData = EventData> {
   eventType: T['type'];
   priority: number;
   filters: Array<string>;

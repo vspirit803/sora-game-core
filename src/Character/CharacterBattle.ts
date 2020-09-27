@@ -11,6 +11,7 @@ import {
   EventDataTreated,
   Listen,
   Listener,
+  RemoveAllListeners,
 } from '@src/Event';
 import { FactionBattle } from '@src/Faction';
 import { Skill } from '@src/Skill';
@@ -185,18 +186,14 @@ export class CharacterBattle implements CharacterNormal, UUID {
   }
 
   /**移除订阅基本的战斗事件 */
-  unSubscribeBaseBattleEvent(): void {
-    // for (const eachSubscriberKey in this.baseBattleEventSubscribers) {
-    //   const eachSubscriber = this.baseBattleEventSubscribers[eachSubscriberKey];
-    //   this.battle!.eventCenter.removeSubscriber(eachSubscriber);
-    // }
-  }
+  @RemoveAllListeners
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  unSubscribeBaseBattleEvent(): void {}
 
   async action(): Promise<void> {
     console.log(`轮到${this.name}行动了`);
     const availableTargets = this.enemies.filter((eachCharacter) => eachCharacter.isAlive);
     let target = availableTargets[Math.floor(Math.random() * availableTargets.length)];
-    console.log(target.name);
     let skill = this.skills[0];
 
     if (this.isPlayerControl && this.battle.fireTarget) {
