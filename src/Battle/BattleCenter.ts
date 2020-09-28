@@ -2,7 +2,7 @@
  * @Author: vspirit803
  * @Date: 2020-09-25 10:41:28
  * @Description:
- * @LastEditTime: 2020-09-25 16:59:57
+ * @LastEditTime: 2020-09-28 17:28:50
  * @LastEditors: vspirit803
  */
 import { Condition, ConditionItem, LogicOperator } from '@src/Condition';
@@ -25,6 +25,7 @@ export class BattleCenter {
 
   battles: Array<BattleConfiguration>;
   battlesMap: Map<string, BattleConfiguration>;
+  currBattle?: Battle;
 
   constructor() {
     this.battles = [];
@@ -43,6 +44,10 @@ export class BattleCenter {
   }
 
   generateBattle(id: string, team: TeamNormal): Battle {
+    if (this.currBattle) {
+      this.currBattle.cancelAllListeners();
+    }
+
     const battleConfiguration = this.battlesMap.get(id);
     if (battleConfiguration === undefined) {
       throw new Error(`id为[${id}]的战斗配置不存在`);
@@ -94,6 +99,8 @@ export class BattleCenter {
     conditionItemKillAll.setTestInstence(battle);
     conditionItemNobuAlive.setTestInstence(battle);
     conditionItemRound5.setTestInstence(battle);
+
+    this.currBattle = battle;
     return battle;
   }
 }

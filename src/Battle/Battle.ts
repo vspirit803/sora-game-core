@@ -2,7 +2,7 @@
  * @Author: vspirit803
  * @Date: 2020-09-25 10:40:51
  * @Description:
- * @LastEditTime: 2020-09-28 13:43:28
+ * @LastEditTime: 2020-09-28 17:44:06
  * @LastEditors: vspirit803
  */
 import { BattleActionQueueBase, BattleActionQueueMHXY } from '@src/BattleActionQueue';
@@ -92,7 +92,10 @@ export class Battle implements UUID {
         break;
       }
     }
+    this.cancelAllListeners();
+  }
 
+  cancelAllListeners() {
     this.eventCenter.listeners.forEach((eachListener) => this.eventCenter.cancelListen(eachListener));
   }
 }
