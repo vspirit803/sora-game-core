@@ -2,7 +2,7 @@
  * @Author: vspirit803
  * @Date: 2020-09-25 10:40:51
  * @Description:
- * @LastEditTime: 2020-09-25 16:57:09
+ * @LastEditTime: 2020-09-28 13:43:28
  * @LastEditors: vspirit803
  */
 import { BattleActionQueueBase, BattleActionQueueMHXY } from '@src/BattleActionQueue';
@@ -65,7 +65,7 @@ export class Battle implements UUID {
   }
 
   async start(): Promise<void> {
-    this.eventCenter.trigger(this, { eventType: 'BattleStart' });
+    await this.eventCenter.trigger(this, { eventType: 'BattleStart' });
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
@@ -75,7 +75,7 @@ export class Battle implements UUID {
       await character.action();
 
       if (this.successCondition.isCompleted) {
-        this.eventCenter.trigger(this, {
+        await this.eventCenter.trigger(this, {
           eventType: 'BattleSuccess',
           battle: this,
           round: this.battleActionQueue.roundCount,
@@ -92,5 +92,7 @@ export class Battle implements UUID {
         break;
       }
     }
+
+    this.eventCenter.listeners.forEach((eachListener) => this.eventCenter.cancelListen(eachListener));
   }
 }
