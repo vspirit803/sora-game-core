@@ -2,7 +2,7 @@
  * @Author: vspirit803
  * @Date: 2020-09-25 10:40:51
  * @Description:
- * @LastEditTime: 2020-09-28 17:44:06
+ * @LastEditTime: 2020-09-29 11:28:29
  * @LastEditors: vspirit803
  */
 import { BattleActionQueueBase, BattleActionQueueMHXY } from '@src/BattleActionQueue';
@@ -30,6 +30,9 @@ export class Battle implements UUID {
   eventCenter: EventCenter;
   successCondition: Condition;
   battleActionQueue: BattleActionQueueBase;
+
+  endFlag: boolean;
+
   /**
    * 自动模式
    */
@@ -47,6 +50,7 @@ export class Battle implements UUID {
     this.eventCenter = EventCenter.getInstence();
     this.successCondition = successCondition ?? new Condition();
     this.autoMode = false;
+    this.endFlag = false;
     this.factions = battleConfiguration.factions.map(
       (eachFactionConfiguration) => new FactionBattle(eachFactionConfiguration, this),
     );
@@ -67,8 +71,7 @@ export class Battle implements UUID {
   async start(): Promise<void> {
     await this.eventCenter.trigger(this, { eventType: 'BattleStart' });
 
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
+    while (!this.endFlag) {
       const character = this.battleActionQueue.getNext();
       this.eventCenter.trigger(character, { eventType: 'ActionStart', source: character });
 
@@ -93,6 +96,10 @@ export class Battle implements UUID {
       }
     }
     this.cancelAllListeners();
+  }
+
+  end() {
+    this.endFlag = true;
   }
 
   cancelAllListeners() {
