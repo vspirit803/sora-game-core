@@ -1,0 +1,77 @@
+{
+  "sentences": [
+    { "type": "Conversation", "uuid": "s100001", "character": "小王", "content": "你好,我是小王" },
+    { "type": "Conversation", "uuid": "s100002", "character": "面试官", "content": "你先做个自我介绍吧" },
+    {
+      "type": "Conversation",
+      "uuid": "s100003",
+      "character": "小王",
+      "content": "我应聘游戏策划,已经有3年的工作经验了"
+    },
+    {
+      "type": "Conversation",
+      "uuid": "s100004",
+      "character": "小王",
+      "content": "之前就职于米忽悠,在原神项目组担任系统策划"
+    },
+    {
+      "type": "Conversation",
+      "uuid": "s100005",
+      "character": "小王",
+      "content": "主要的工作成果有原神的物品系统、食物制作系统、技能系统等"
+    },
+    { "type": "Conversation", "uuid": "s100006", "character": "面试官", "content": "你觉得原神这款游戏怎么样" },
+    {
+      "type": "Select",
+      "uuid": "s100007",
+      "options": [
+        { "text": "山寨塞尔达,辣鸡氪金游戏,这波我站翔哥", "target": "s100008" },
+        { "text": "国产之光,技术力的体现,良心大作,ign9分神作!", "target": "s1000013" }
+      ]
+    },
+    {
+      "type": "Conversation",
+      "uuid": "s100008",
+      "character": "面试官",
+      "content": "...打个电话"
+    },
+    {
+      "type": "Conversation",
+      "uuid": "s100009",
+      "character": "米孝子",
+      "content": "你个xxx,就知道喷,你有本事做一个这么牛逼的游戏出来啊"
+    },
+    {
+      "type": "Conversation",
+      "uuid": "s1000010",
+      "character": "米忽悠法务",
+      "content": "下次我们再用你的形象做个npc叫王八"
+    },
+    {
+      "type": "Conversation",
+      "uuid": "s1000011",
+      "character": "小王",
+      "content": "---该用户已被禁言---"
+    },
+    {
+      "type": "End",
+      "uuid": "s1000012"
+    },
+    {
+      "type": "Conversation",
+      "uuid": "s1000013",
+      "character": "面试官",
+      "content": "我就欣赏你这种睁眼说瞎话的能力,你被录取了!"
+    },
+    {
+      "type": "Conversation",
+      "uuid": "s1000014",
+      "character": "小王",
+      "content": "哪里哪里,那以后就请多指教了"
+    },
+    {
+      "type": "End",
+      "uuid": "s1000015"
+    }
+  ]
+}

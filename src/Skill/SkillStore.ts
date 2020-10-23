@@ -2,7 +2,7 @@
  * @Author: vspirit803
  * @Date: 2020-09-27 10:36:03
  * @Description:
- * @LastEditTime: 2020-09-27 11:08:24
+ * @LastEditTime: 2020-10-23 14:05:49
  * @LastEditors: vspirit803
  */
 import 'reflect-metadata';
@@ -70,6 +70,7 @@ export class SkillStore {
     await battle.eventCenter.trigger(source, { eventType: 'Damaging', source, target, damage, isCrit });
   }
 
+  //窒碍短匕
   @DefineSkill('S00004')
   async skill00004(skillData: SkillData, source: CharacterBattle, target: CharacterBattle) {
     const battle = source.battle;
@@ -81,6 +82,7 @@ export class SkillStore {
     await battle.eventCenter.trigger(source, { eventType: 'Damaging', source, target, damage, isCrit });
   }
 
+  //幻影突袭
   @DefineSkill('S00005')
   async skill00005(skillData: SkillData, source: CharacterBattle, target: CharacterBattle) {
     const battle = source.battle;
@@ -94,6 +96,7 @@ export class SkillStore {
     }
   }
 
+  //恩赐解脱
   @DefineSkill('S00007')
   async skill00007(skillData: SkillData, source: CharacterBattle, target: CharacterBattle) {
     const battle = source.battle;
