@@ -1,4 +1,5 @@
 {
+  "name": "游戏面试",
   "sentences": [
     { "type": "Conversation", "uuid": "s100001", "character": "小王", "content": "你好,我是小王" },
     { "type": "Conversation", "uuid": "s100002", "character": "面试官", "content": "你先做个自我介绍吧" },

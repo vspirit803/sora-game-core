@@ -12,6 +12,7 @@ import { ScriptSentence, ScriptSentenceConfiguration } from './ScriptSentence';
 export interface ScriptSentenceConfigurationConversation extends ScriptSentenceConfiguration {
   character: string;
   content: string;
+  background?: string;
 }
 
 /**
@@ -20,6 +21,7 @@ export interface ScriptSentenceConfigurationConversation extends ScriptSentenceC
 export class ScriptSentenceConversation extends ScriptSentence {
   character: string;
   content: string;
+  background?: string;
 
   constructor({ uuid, type, character, content }: ScriptSentenceConfigurationConversation, script: Script) {
     super({ uuid, type }, script);
@@ -29,6 +31,6 @@ export class ScriptSentenceConversation extends ScriptSentence {
   }
 
   run() {
-    this.script.chat(this.character, this.content);
+    this.script.chat(this.character, this.content, this.background);
   }
 }
