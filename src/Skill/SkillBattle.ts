@@ -66,7 +66,7 @@ export class SkillBattle implements SkillNormal {
     if (!this.handler) {
       throw new Error(`技能[${this.id}]不能主动触发`);
     }
-    console.log(`[${this.owner.name}]对[${target.name}]施放了[${this.name}]`);
+    // console.log(`[${this.owner.name}]对[${target.name}]施放了[${this.name}]`);
     await this.handler(this.data, this.owner, target);
     this.currCooldown = this.cooldown + 1; //包含本回合
   }

@@ -95,7 +95,7 @@ export class CharacterBattle implements CharacterNormal, UUID {
   @Listen<EventDataAttacking>({ eventType: 'Attacking', priority: 2 })
   async onAttacking(data: EventDataAttacking) {
     const target = data.target;
-    console.log(`[${this.name}]🗡️[${target.name}]`);
+    // console.log(`[${this.name}]🗡️[${target.name}]`);
     await this.battle.eventCenter.trigger(this, {
       eventType: 'Attacked',
       source: this,
@@ -109,7 +109,7 @@ export class CharacterBattle implements CharacterNormal, UUID {
     const target = data.target;
     const damage = Math.round(attackSource.properties.atk.battleValue) - target.properties.def.battleValue;
     const newHp = target.currHp > damage ? target.currHp - damage : 0;
-    console.log(`[${target.name}]💔${damage} -> ${newHp}/${target.properties.hp.battleValue}`);
+    // console.log(`[${target.name}]💔${damage} -> ${newHp}/${target.properties.hp.battleValue}`);
     target.currHp = newHp;
     if (target.currHp <= 0) {
       target.currHp = 0;
@@ -142,7 +142,7 @@ export class CharacterBattle implements CharacterNormal, UUID {
     const actualDamage = Math.min(target.currHp, finalDamage); //真正造成的伤害
     const overflowDamage = finalDamage - actualDamage; //溢出伤害
     const newHp = target.currHp - actualDamage;
-    console.log(`[${target.name}]💔${actualDamage} -> ${newHp}/${target.properties.hp.battleValue}`);
+    // console.log(`[${target.name}]💔${actualDamage} -> ${newHp}/${target.properties.hp.battleValue}`);
     data.actualDamage = actualDamage;
     data.finalDamage = finalDamage;
     data.overflowDamage = overflowDamage;
@@ -162,7 +162,7 @@ export class CharacterBattle implements CharacterNormal, UUID {
     const actualDamage = Math.min(target.properties.hp.battleValue - target.currHp, finalDamage); //真正造成的治疗
     const overflowDamage = finalDamage - actualDamage; //溢出治疗
     const newHp = target.currHp + actualDamage;
-    console.log(`[${target.name}]♥${actualDamage} -> ${newHp}/${target.properties.hp.battleValue}`);
+    // console.log(`[${target.name}]♥${actualDamage} -> ${newHp}/${target.properties.hp.battleValue}`);
     data.actualDamage = actualDamage;
     data.finalDamage = finalDamage;
     data.overflowDamage = overflowDamage;

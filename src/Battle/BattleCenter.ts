@@ -45,6 +45,7 @@ export class BattleCenter {
 
   generateBattle(id: string, team: TeamNormal): Battle {
     if (this.currBattle) {
+      this.currBattle.end();
       this.currBattle.cancelAllListeners();
     }
 

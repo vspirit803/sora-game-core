@@ -47,7 +47,7 @@ export class Battle implements UUID {
   constructor(battleConfiguration: BattleConfiguration, playerTeam: TeamNormal, successCondition?: Condition) {
     this.uuid = new ObjectId().toHexString();
     this.name = battleConfiguration.name ?? '未留下名字的战斗';
-    this.eventCenter = EventCenter.getInstence();
+    this.eventCenter = new EventCenter();
     this.successCondition = successCondition ?? new Condition();
     this.autoMode = false;
     this.endFlag = false;
@@ -103,6 +103,7 @@ export class Battle implements UUID {
   }
 
   cancelAllListeners() {
+    this.characters.forEach((each) => each.unSubscribeBaseBattleEvent());
     this.eventCenter.listeners.forEach((eachListener) => this.eventCenter.cancelListen(eachListener));
   }
 }

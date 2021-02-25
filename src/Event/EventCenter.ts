@@ -47,7 +47,7 @@ export class EventCenter {
 
   listeners: Array<EventListener>;
 
-  private constructor() {
+  public constructor() {
     this.listeners = [];
   }
 

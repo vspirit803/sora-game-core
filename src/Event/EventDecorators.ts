@@ -1,5 +1,7 @@
 import 'reflect-metadata';
 
+import { Battle } from '@src/Battle';
+import { CharacterBattle } from '@src/Character';
 import { UUID } from '@src/Common';
 
 import { EventCenter, EventListener } from './EventCenter';
@@ -53,7 +55,7 @@ export function Listen<T extends EventData>({
 }
 
 export function Listener(value?: string) {
-  function classDecorator<T extends { new (...args: any[]): {} }>(constructor: T) {
+  function classDecorator<T extends { new (...args: any[]): { battle: Battle } }>(constructor: T) {
     return class extends constructor {
       constructor(...args: any[]) {
         super(...args);
@@ -73,7 +75,8 @@ export function Listener(value?: string) {
             } else if (Reflect.ownKeys(this).includes('uuid')) {
               filter = (this as unknown) as UUID;
             }
-            const listener = EventCenter.getInstence().listen({
+
+            const listener = this.battle.eventCenter.listen({
               eventType: eachEvent,
               priority,
               filter,
@@ -100,8 +103,11 @@ export function RemoveAllListeners(
     // 注销监听器
     const listenerList: Array<EventListener> = Reflect.getMetadata('listenerList', this);
     listenerList.forEach((eachListener) => {
-      EventCenter.getInstence().cancelListen(eachListener);
+      (this as { battle: Battle }).battle.eventCenter.cancelListen(eachListener);
+      // console.log(this);
+      // console.log(this.battle.name);
     });
     return result;
   };
+  return descriptor;
 }
