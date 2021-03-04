@@ -2,7 +2,7 @@
  * @Author: vspirit803
  * @Date: 2021-02-22 15:24:27
  * @Description:
- * @LastEditTime: 2021-03-04 16:19:50
+ * @LastEditTime: 2021-03-04 17:49:56
  * @LastEditors: vspirit803
  */
 import { CharacterBattle } from '@src/Character';
@@ -30,6 +30,7 @@ export class Buff {
   dispellable: Dispellable;
   /**子Buff数组 */
   buffItems: Array<AbstractBuffItem>;
+
   constructor({
     source,
     target,
@@ -56,6 +57,7 @@ export class Buff {
 
   destroy(): void {
     this.buffItems.forEach((eachBuff) => eachBuff.destroy());
+    this.target.buffs = this.target.buffs.filter((each) => each !== this);
   }
 
   afterRound(): void {
@@ -64,6 +66,7 @@ export class Buff {
       if (this.duration === 0) {
         // todo
         // buff到期
+        this.destroy();
       }
     }
   }

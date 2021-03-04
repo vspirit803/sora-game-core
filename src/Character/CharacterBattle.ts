@@ -1,5 +1,5 @@
 import { Battle } from '@src/Battle';
-import { Buff } from '@src/Buff';
+import { Buff, SILENCE, Status, StatusBuffItem, STUNNED } from '@src/Buff';
 import { UUID } from '@src/Common';
 import {
   EventDataActionEnd,
@@ -44,14 +44,10 @@ export class CharacterBattle implements CharacterNormal, UUID {
   currHp: number;
   /**是否存活 */
   isAlive: boolean;
-  /**是否被沉默 */
-  isSilence: boolean;
-  /**是否被眩晕 */
-  isStunned: boolean;
   /**基本战斗事件订阅者 */
   baseBattleEventSubscribers: { [eventName: string]: any };
   /**状态数组 */
-  statuses: Array<Buff>;
+  buffs: Array<Buff>;
 
   skills: Array<SkillBattle>;
 
@@ -81,10 +77,8 @@ export class CharacterBattle implements CharacterNormal, UUID {
     this.properties = properties as { [propName in CharacterPropertyType]: CharacterPropertyBattle };
     this.currHp = this.properties.hp.battleValue;
     this.isAlive = true;
-    this.isSilence = false;
-    this.isStunned = false;
     this.baseBattleEventSubscribers = {};
-    this.statuses = [];
+    this.buffs = [];
   }
 
   /**是否玩家操控角色 */
@@ -181,8 +175,8 @@ export class CharacterBattle implements CharacterNormal, UUID {
     console.log(`[${this.name}]☠`);
     this.isAlive = false;
     this.battle.eventCenter.trigger(killSource, { eventType: 'Killing', source: killSource, target: this });
-    while (this.statuses.length) {
-      const eachStatus = this.statuses.pop()!;
+    while (this.buffs.length) {
+      const eachStatus = this.buffs.pop()!;
       eachStatus.destroy();
     }
     this.unSubscribeBaseBattleEvent();
@@ -205,9 +199,15 @@ export class CharacterBattle implements CharacterNormal, UUID {
 
   async action(): Promise<void> {
     console.log(`轮到${this.name}行动了`);
+
     const availableTargets = this.enemies.filter((eachCharacter) => eachCharacter.isAlive);
     let target = availableTargets[Math.floor(Math.random() * availableTargets.length)];
     let skill = this.skills[0];
+
+    if (this.isStunned()) {
+      await this.battle.eventCenter.trigger(this, { eventType: 'ActionEnd', source: this });
+      return;
+    }
 
     if (this.isPlayerControl && this.battle.fireTarget) {
       target = this.battle.fireTarget;
@@ -236,5 +236,19 @@ export class CharacterBattle implements CharacterNormal, UUID {
 
   get enemies(): Array<CharacterBattle> {
     return this.battle.characters.filter((eachCharacter) => eachCharacter.faction !== this.faction);
+  }
+
+  isInStatus(status: Status): boolean {
+    return this.buffs.some((each) =>
+      each.buffItems.some((each) => each instanceof StatusBuffItem && each.status & status),
+    );
+  }
+
+  isStunned(): boolean {
+    return this.isInStatus(STUNNED);
+  }
+
+  isSilence(): boolean {
+    return this.isInStatus(SILENCE);
   }
 }
