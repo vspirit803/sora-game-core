@@ -1,3 +1,10 @@
+/*
+ * @Author: vspirit803
+ * @Date: 2020-09-25 14:06:27
+ * @Description: 监听事件的装饰器
+ * @LastEditTime: 2021-03-04 10:42:10
+ * @LastEditors: vspirit803
+ */
 import 'reflect-metadata';
 
 import { Battle } from '@src/Battle';
@@ -7,14 +14,6 @@ import { UUID } from '@src/Common';
 import { EventCenter, EventListener } from './EventCenter';
 import { EventData } from './EventData';
 import { EventTypes } from './EventTypes';
-
-/*
- * @Author: vspirit803
- * @Date: 2020-09-25 14:06:27
- * @Description: 监听事件的装饰器
- * @LastEditTime: 2020-09-27 09:16:34
- * @LastEditors: vspirit803
- */
 
 interface ListenOptions<T> {
   /**
