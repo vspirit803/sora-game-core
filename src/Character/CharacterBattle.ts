@@ -1,4 +1,5 @@
 import { Battle } from '@src/Battle';
+import { Buff } from '@src/Buff';
 import { UUID } from '@src/Common';
 import {
   EventDataActionEnd,
@@ -16,7 +17,6 @@ import {
 } from '@src/Event';
 import { FactionBattle } from '@src/Faction';
 import { SkillBattle } from '@src/Skill';
-import { Status } from '@src/Status';
 import { TeamBattle } from '@src/Team';
 
 import { CharacterNormal } from './CharacterNormal';
@@ -51,7 +51,7 @@ export class CharacterBattle implements CharacterNormal, UUID {
   /**基本战斗事件订阅者 */
   baseBattleEventSubscribers: { [eventName: string]: any };
   /**状态数组 */
-  statuses: Array<Status>;
+  statuses: Array<Buff>;
 
   skills: Array<SkillBattle>;
 

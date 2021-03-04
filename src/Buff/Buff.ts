@@ -1,19 +1,25 @@
+/*
+ * @Author: vspirit803
+ * @Date: 2021-02-22 15:24:27
+ * @Description:
+ * @LastEditTime: 2021-03-04 16:19:50
+ * @LastEditors: vspirit803
+ */
 import { CharacterBattle } from '@src/Character';
 
-import { Buff } from './Buff';
+import { AbstractBuffItem } from './AbstractBuffItem';
 
 /**能否驱散 */
-enum Dispellable {
-  NEVER, //无法驱散
-  DEATH_DISPEL, //死亡驱散
-  STRONG_DISPEL, //强驱散
-  BASIC_DISPEL, //基础驱散
-}
+type Dispellable =
+  | 'NEVER' //无法驱散
+  | 'DEATH_DISPEL' //死亡驱散
+  | 'STRONG_DISPEL' //强驱散
+  | 'BASIC_DISPEL'; //基础驱散
 
 /**
  * 状态
  */
-export class Status {
+export class Buff {
   /**状态的来源角色 */
   source: CharacterBattle;
   /**状态的目标角色 */
@@ -23,33 +29,33 @@ export class Status {
   /**可驱散性 */
   dispellable: Dispellable;
   /**子Buff数组 */
-  buffs: Array<Buff>;
+  buffItems: Array<AbstractBuffItem>;
   constructor({
     source,
     target,
     duration = 'forever',
-    dispellable = Dispellable.DEATH_DISPEL,
+    dispellable = 'DEATH_DISPEL',
     buffs = [],
   }: {
     source: CharacterBattle;
     target: CharacterBattle;
     duration?: number | 'forever';
     dispellable?: Dispellable;
-    buffs?: Array<Buff>;
+    buffs?: Array<AbstractBuffItem>;
   }) {
     this.source = source;
     this.target = target;
     this.duration = duration;
     this.dispellable = dispellable;
-    this.buffs = buffs;
+    this.buffItems = buffs;
   }
 
-  addBuffs(...buffs: Array<Buff>): void {
-    this.buffs.push(...buffs);
+  addBuffs(...buffs: Array<AbstractBuffItem>): void {
+    this.buffItems.push(...buffs);
   }
 
   destroy(): void {
-    this.buffs.forEach((eachBuff) => eachBuff.destroy());
+    this.buffItems.forEach((eachBuff) => eachBuff.destroy());
   }
 
   afterRound(): void {
