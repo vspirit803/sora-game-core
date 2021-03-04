@@ -2,7 +2,7 @@
  * @Author: vspirit803
  * @Date: 2021-03-04 15:29:36
  * @Description:
- * @LastEditTime: 2021-03-04 16:19:03
+ * @LastEditTime: 2021-03-04 17:25:33
  * @LastEditors: vspirit803
  */
 /*
@@ -14,15 +14,20 @@
  */
 import { AbstractBuffItem } from './AbstractBuffItem';
 import { Buff } from './Buff';
+import { Status } from './Status';
 
 /**
  * 状态Buff
- * 给角色赋予部分状态,如眩晕,沉默等
+ * 给角色赋予状态,如眩晕,沉默等
  */
 export class StatusBuffItem extends AbstractBuffItem {
-  // constructor(status: Status) {
-  //   super(status);
-  // }
+  status: Status;
+
+  constructor(buff: Buff, status: Status) {
+    super(buff);
+
+    this.status = status;
+  }
 
   /**buff的取消 */
   // eslint-disable-next-line @typescript-eslint/no-empty-function
