@@ -143,7 +143,16 @@ export class CharacterBattle implements CharacterNormal, UUID {
     target.currHp = newHp;
     if (target.currHp <= 0) {
       target.currHp = 0;
-      target.battle.eventCenter.trigger(target, { ...data, eventType: 'Killed' });
+      await target.battle.eventCenter.trigger(target, { ...data, eventType: 'Killed' });
+    } else {
+      if (Math.random() < 0.3) {
+        console.log(`${target.name}被打晕了`);
+        const stunBuff = new Buff({ source, target, duration: 1 });
+        const stunBuffItem = new StatusBuffItem(stunBuff, STUNNED);
+        stunBuff.addBuffs(stunBuffItem);
+
+        this.buffs.push(stunBuff);
+      }
     }
   }
 
@@ -173,13 +182,28 @@ export class CharacterBattle implements CharacterNormal, UUID {
   async onKilled(data: EventDataKilled) {
     const killSource = data.source;
     console.log(`[${this.name}]☠`);
-    this.isAlive = false;
-    this.battle.eventCenter.trigger(killSource, { eventType: 'Killing', source: killSource, target: this });
-    while (this.buffs.length) {
-      const eachStatus = this.buffs.pop()!;
-      eachStatus.destroy();
+    await this.battle.eventCenter.trigger(killSource, { eventType: 'Killing', source: killSource, target: this });
+
+    if (this.isAlive) {
+      this.isAlive = false;
+      this.battle.eventCenter.listen({
+        eventType: 'ActionEnd',
+        once: true,
+        callback: async () => {
+          while (this.buffs.length) {
+            const eachStatus = this.buffs.pop()!;
+            eachStatus.destroy();
+          }
+          this.unSubscribeBaseBattleEvent();
+        },
+      });
     }
-    this.unSubscribeBaseBattleEvent();
+
+    // while (this.buffs.length) {
+    //   const eachStatus = this.buffs.pop()!;
+    //   eachStatus.destroy();
+    // }
+    // this.unSubscribeBaseBattleEvent();
   }
 
   @Listen<EventDataActionEnd>({ eventType: 'ActionEnd', priority: 2 })
@@ -203,8 +227,11 @@ export class CharacterBattle implements CharacterNormal, UUID {
     const availableTargets = this.enemies.filter((eachCharacter) => eachCharacter.isAlive);
     let target = availableTargets[Math.floor(Math.random() * availableTargets.length)];
     let skill = this.skills[0];
+    const availableSkills = this.skills.filter((each) => each.type !== 'passive');
+    skill = availableSkills[Math.floor(Math.random() * availableSkills.length)];
 
     if (this.isStunned()) {
+      console.log(`${this.name}处于眩晕状态,跳过回合`);
       await this.battle.eventCenter.trigger(this, { eventType: 'ActionEnd', source: this });
       return;
     }
@@ -217,6 +244,8 @@ export class CharacterBattle implements CharacterNormal, UUID {
       const skillSelectData: EventDataSkillSelect = {
         eventType: 'SkillSelect',
         source: this,
+        availableSkills,
+        availableTargets,
         selectedSkill: undefined,
         selectedTarget: undefined,
       };

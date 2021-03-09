@@ -1833,7 +1833,7 @@
         "increaseValue": 0
       },
       "hp": {
-        "baseValue": 1000,
+        "baseValue": 10000,
         "increaseValue": 5
       },
       "speed": {

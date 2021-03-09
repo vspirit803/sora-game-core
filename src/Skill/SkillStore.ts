@@ -2,13 +2,14 @@
  * @Author: vspirit803
  * @Date: 2020-09-27 10:36:03
  * @Description:
- * @LastEditTime: 2020-10-23 14:05:49
+ * @LastEditTime: 2021-03-05 14:10:08
  * @LastEditors: vspirit803
  */
 import 'reflect-metadata';
 
+import { Buff, StatusBuffItem, STUNNED } from '@src/Buff';
 import { CharacterBattle } from '@src/Character';
-import { EventDataDamaging } from '@src/Event';
+import { EventCenter, EventDataDamaging } from '@src/Event';
 
 import { SkillData } from './SkillData';
 
@@ -92,7 +93,11 @@ export class SkillStore {
       const damage = Math.round(
         source.properties.atk.battleValue * (isCrit ? source.properties.critMultiplier.battleValue : 1) * ratio,
       );
-      await battle.eventCenter.trigger(source, { eventType: 'Damaging', source, target, damage, isCrit });
+
+      const data = { eventType: 'Damaging' as const, source, target, damage, isCrit };
+      await battle.eventCenter.trigger(source, data);
+      console.log('行动后的data:', { ...data });
+      // await battle.eventCenter.trigger(source, { eventType: 'Damaging', source, target, damage, isCrit });
     }
   }
 
@@ -105,6 +110,24 @@ export class SkillStore {
     const damage = Math.round(
       source.properties.atk.battleValue * (isCrit ? source.properties.critMultiplier.battleValue : 1) * ratio,
     );
+
+    console.log(`${source.name}使用了大招脱力,眩晕了`);
+
+    battle.eventCenter.listen({
+      eventType: 'ActionEnd',
+      filter: source,
+      once: true,
+      callback: async () => {
+        console.log(`${source.name}获得眩晕状态`);
+
+        const stunBuff = new Buff({ source, target: source, duration: 1 });
+        const stunBuffItem = new StatusBuffItem(stunBuff, STUNNED);
+        stunBuff.addBuffs(stunBuffItem);
+
+        source.buffs.push(stunBuff);
+      },
+    });
+
     await battle.eventCenter.trigger(source, { eventType: 'Damaging', source, target, damage, isCrit });
   }
 }

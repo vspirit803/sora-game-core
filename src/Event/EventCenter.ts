@@ -2,7 +2,7 @@
  * @Author: vspirit803
  * @Date: 2020-09-24 16:31:12
  * @Description:
- * @LastEditTime: 2020-09-27 09:11:38
+ * @LastEditTime: 2021-03-05 11:17:59
  * @LastEditors: vspirit803
  */
 import { UUID } from '@src/Common';
@@ -15,17 +15,20 @@ export class EventListener<T extends EventData = EventData> {
   filters: Array<string>;
   callback: (eventData: T) => Promise<any>;
   timestamp: number;
+  once: boolean;
 
   constructor({
     eventType,
     priority,
     filters,
     callback,
+    once = false,
   }: {
     eventType: T['type'];
     priority: number;
     filters: Array<string>;
     callback: (eventData: T) => Promise<any>;
+    once?: boolean;
   }) {
     this.eventType = eventType;
     this.priority = priority;
@@ -33,6 +36,7 @@ export class EventListener<T extends EventData = EventData> {
     this.callback = callback;
 
     this.timestamp = Date.now();
+    this.once = once;
   }
 }
 
@@ -56,11 +60,13 @@ export class EventCenter {
     priority = 5,
     filter,
     callback,
+    once,
   }: {
     eventType: T['type'];
     priority?: number;
     filter?: UUID | Array<UUID>;
     callback: (eventData: T) => Promise<void>;
+    once?: boolean;
   }): EventListener<T> {
     let filters: Array<string>;
     if (filter === undefined) {
@@ -71,7 +77,7 @@ export class EventCenter {
       filters = filter.map((each) => each.uuid);
     }
 
-    const listener = new EventListener({ eventType, priority, filters, callback });
+    const listener = new EventListener({ eventType, priority, filters, callback, once });
     this.listeners.push((listener as unknown) as EventListener);
     return listener;
   }
@@ -93,6 +99,13 @@ export class EventCenter {
 
     for (let i = 0; i < sortedListeners.length; i++) {
       const eachListener = sortedListeners[i];
+      if (!this.listeners.includes(eachListener)) {
+        // canceled
+        continue;
+      }
+      if (eachListener.once) {
+        this.cancelListen(eachListener);
+      }
       await eachListener.callback(eventData);
     }
   }

@@ -6,6 +6,7 @@
  * @LastEditors: vspirit803
  */
 import { CharacterBattle } from '@src/Character';
+import { EventData, EventListener } from '@src/Event';
 
 import { AbstractBuffItem } from './AbstractBuffItem';
 
@@ -31,6 +32,8 @@ export class Buff {
   /**子Buff数组 */
   buffItems: Array<AbstractBuffItem>;
 
+  roundCounter: EventListener<EventData>;
+
   constructor({
     source,
     target,
@@ -49,6 +52,13 @@ export class Buff {
     this.duration = duration;
     this.dispellable = dispellable;
     this.buffItems = buffs;
+
+    this.roundCounter = target.battle.eventCenter.listen({
+      eventType: 'ActionEnd',
+      callback: async () => this.afterRound(),
+      filter: target,
+      priority: 1,
+    });
   }
 
   addBuffs(...buffs: Array<AbstractBuffItem>): void {
@@ -57,6 +67,7 @@ export class Buff {
 
   destroy(): void {
     this.buffItems.forEach((eachBuff) => eachBuff.destroy());
+    this.target.battle.eventCenter.cancelListen(this.roundCounter);
     this.target.buffs = this.target.buffs.filter((each) => each !== this);
   }
 

@@ -27,6 +27,8 @@ export interface EventDataActionStart extends EventData {
 export interface EventDataSkillSelect extends EventData {
   eventType: 'SkillSelect';
   source: CharacterBattle;
+  availableSkills: Array<SkillBattle>;
+  availableTargets: Array<CharacterBattle>;
   selectedSkill?: SkillBattle;
   selectedTarget?: CharacterBattle;
 }
