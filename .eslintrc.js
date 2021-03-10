@@ -1,3 +1,10 @@
+/*
+ * @Author: vspirit803
+ * @Date: 2021-02-22 15:24:27
+ * @Description:
+ * @LastEditTime: 2021-03-10 17:58:01
+ * @LastEditors: vspirit803
+ */
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
