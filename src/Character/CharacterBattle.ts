@@ -267,6 +267,10 @@ export class CharacterBattle implements CharacterNormal, UUID {
     return this.battle.characters.filter((eachCharacter) => eachCharacter.faction !== this.faction);
   }
 
+  get teammates(): Array<CharacterBattle> {
+    return this.team.members.filter((each) => each !== this);
+  }
+
   isInStatus(status: Status): boolean {
     return this.buffs.some((each) =>
       each.buffItems.some((each) => each instanceof StatusBuffItem && each.status & status),

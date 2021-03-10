@@ -2,7 +2,7 @@
  * @Author: vspirit803
  * @Date: 2020-09-25 10:47:53
  * @Description: 技能(战斗状态)
- * @LastEditTime: 2020-09-27 13:45:23
+ * @LastEditTime: 2021-03-10 17:25:10
  * @LastEditors: vspirit803
  */
 import { CharacterBattle } from '@src/Character';
@@ -11,6 +11,8 @@ import { SkillCenter } from './SkillCenter';
 import { SkillData } from './SkillData';
 import { SkillNormal } from './SkillNormal';
 import { SkillStore } from './SkillStore';
+import * as SkillTarget from './SkillTarget';
+import { SkillTargetType } from './SkillTarget';
 import { SkillType } from './SkillType';
 
 /**
@@ -35,6 +37,8 @@ export class SkillBattle implements SkillNormal {
   owner: CharacterBattle;
   /**当前冷却 */
   currCooldown: number;
+  /**可选目标 */
+  target: SkillTargetType;
 
   handler?: (skillData: SkillData, source: CharacterBattle, target: CharacterBattle) => Promise<void>;
 
@@ -54,6 +58,7 @@ export class SkillBattle implements SkillNormal {
     this.currCooldown = 0;
     this.level = level;
     this.data = skillConfigration.levels[level - 1];
+    this.target = skillConfigration.target ?? SkillTarget.NO_TARGET;
 
     this.owner = owner;
 
@@ -69,5 +74,31 @@ export class SkillBattle implements SkillNormal {
     // console.log(`[${this.owner.name}]对[${target.name}]施放了[${this.name}]`);
     await this.handler(this.data, this.owner, target);
     this.currCooldown = this.cooldown + 1; //包含本回合
+  }
+
+  getTargets() {
+    if (this.target & SkillTarget.NO_TARGET) {
+      return [];
+    }
+
+    let tempList: Array<CharacterBattle> = [];
+
+    if (this.target & SkillTarget.SELF) {
+      tempList.push(this.owner);
+    }
+    if (this.target & SkillTarget.TEAM_MATE) {
+      tempList = [...tempList, ...this.owner.teammates];
+    }
+    if (this.target & SkillTarget.ENEMY) {
+      tempList = [...tempList, ...this.owner.enemies];
+    }
+    if (!(this.target & SkillTarget.ALIVE)) {
+      tempList = tempList.filter((each) => !each.isAlive);
+    }
+    if (!(this.target & SkillTarget.DEAD)) {
+      tempList = tempList.filter((each) => each.isAlive);
+    }
+
+    return tempList;
   }
 }
