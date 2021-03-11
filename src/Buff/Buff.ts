@@ -2,11 +2,12 @@
  * @Author: vspirit803
  * @Date: 2021-02-22 15:24:27
  * @Description:
- * @LastEditTime: 2021-03-04 17:49:56
+ * @LastEditTime: 2021-03-11 13:54:53
  * @LastEditors: vspirit803
  */
 import { CharacterBattle } from '@src/Character';
 import { EventData, EventListener } from '@src/Event';
+import { ObjectId } from 'bson';
 
 import { AbstractBuffItem } from './AbstractBuffItem';
 
@@ -21,6 +22,9 @@ type Dispellable =
  * 状态
  */
 export class Buff {
+  uuid: string;
+  /**buff名称 */
+  name: string;
   /**状态的来源角色 */
   source: CharacterBattle;
   /**状态的目标角色 */
@@ -35,18 +39,22 @@ export class Buff {
   roundCounter: EventListener<EventData>;
 
   constructor({
+    name = '无名buff',
     source,
     target,
     duration = 'forever',
     dispellable = 'DEATH_DISPEL',
     buffs = [],
   }: {
+    name?: string;
     source: CharacterBattle;
     target: CharacterBattle;
     duration?: number | 'forever';
     dispellable?: Dispellable;
     buffs?: Array<AbstractBuffItem>;
   }) {
+    this.uuid = new ObjectId().toHexString();
+    this.name = name;
     this.source = source;
     this.target = target;
     this.duration = duration;

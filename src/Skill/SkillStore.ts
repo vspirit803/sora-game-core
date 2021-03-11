@@ -2,7 +2,7 @@
  * @Author: vspirit803
  * @Date: 2020-09-27 10:36:03
  * @Description:
- * @LastEditTime: 2021-03-10 17:57:39
+ * @LastEditTime: 2021-03-11 14:00:10
  * @LastEditors: vspirit803
  */
 import 'reflect-metadata';
@@ -119,7 +119,7 @@ export class SkillStore {
       callback: async () => {
         console.log(`${source.name}获得眩晕状态`);
 
-        const stunBuff = new Buff({ source, target: source, duration: 1 });
+        const stunBuff = new Buff({ name: '眩晕', source, target: source, duration: 1 });
         const stunBuffItem = new StatusBuffItem(stunBuff, STUNNED);
         stunBuff.addBuffs(stunBuffItem);
 

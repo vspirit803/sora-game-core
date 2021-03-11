@@ -147,7 +147,7 @@ export class CharacterBattle implements CharacterNormal, UUID {
     } else {
       if (Math.random() < 0.3) {
         console.log(`${target.name}被打晕了`);
-        const stunBuff = new Buff({ source, target, duration: 1 });
+        const stunBuff = new Buff({ name: '眩晕', source, target, duration: 1 });
         const stunBuffItem = new StatusBuffItem(stunBuff, STUNNED);
         stunBuff.addBuffs(stunBuffItem);
 

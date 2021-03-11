@@ -2,7 +2,7 @@
  * @Author: vspirit803
  * @Date: 2020-09-25 10:47:53
  * @Description: 技能(战斗状态)
- * @LastEditTime: 2021-03-10 17:25:10
+ * @LastEditTime: 2021-03-11 15:39:26
  * @LastEditors: vspirit803
  */
 import { CharacterBattle } from '@src/Character';
@@ -58,7 +58,7 @@ export class SkillBattle implements SkillNormal {
     this.currCooldown = 0;
     this.level = level;
     this.data = skillConfigration.levels[level - 1];
-    this.target = skillConfigration.target ?? SkillTarget.NO_TARGET;
+    this.target = skillConfigration.target ?? SkillTarget.NON_TARGET;
 
     this.owner = owner;
 
@@ -77,7 +77,7 @@ export class SkillBattle implements SkillNormal {
   }
 
   getTargets() {
-    if (this.target & SkillTarget.NO_TARGET) {
+    if (this.target & SkillTarget.NON_TARGET) {
       return [];
     }
 
@@ -100,5 +100,9 @@ export class SkillBattle implements SkillNormal {
     }
 
     return tempList;
+  }
+
+  get isNonTarget() {
+    return this.target & SkillTarget.NON_TARGET;
   }
 }
